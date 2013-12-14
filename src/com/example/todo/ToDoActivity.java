@@ -30,30 +30,54 @@ public class ToDoActivity extends Activity{
 	ArrayList<String> items; 
 	ArrayAdapter<String> itemsAdapter;
 	static final int REQUEST_CODE = 1;
+	String filename = "todo_Tushar.txt";
 
-	public void ButtonClicked(View v) {
+	public boolean ButtonClicked(View v) {
 		Log.d(TAG, "onAddClicked");
 		newItem = (EditText) findViewById(R.id.NewItemID);
-		if (!newItem.getText().toString().equals("")){
-			items.add(newItem.getText().toString());
-			//			itemsAdapter.add(newItem.getText().toString());
+		String newItemText = newItem.getText().toString().trim();
+		if (!newItemText.equals("")){
+			// check if item already exists in the list
+			for (int i=0;i<items.size();i++){
+				if (newItemText.equals(items.get(i))){
+					String duplicateItem = "Item '" + newItemText + "' already exists in list. \n Please enter different name or click existing to edit"; 
+					Toast.makeText(this, duplicateItem, Toast.LENGTH_LONG).show();
+					return false;
+				}
+			}
+			items.add(newItemText);
+			//itemsAdapter.add(newItem.getText().toString());
 			itemsAdapter.notifyDataSetInvalidated();
 			newItem.setText("");
 			saveItems();
+			return true;
 		} else {
 			Toast.makeText(this, "Please enter New Item Name", Toast.LENGTH_LONG).show();
+			return false;
 		}
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
+		Log.d(TAG, "onReceivingEditResult");
 		if (requestCode == REQUEST_CODE && resultCode == RESULT_OK){
-			String value = intent.getExtras().getString("text").toString();
+			String value = intent.getExtras().getString("text").toString().trim();
 			int pos = Integer.parseInt(intent.getExtras().getString("position").toString());
-			items.set(pos, value);
-			itemsAdapter.notifyDataSetInvalidated();
-			saveItems();
+			boolean flag = true;
+			for (int i=0;i<items.size();i++){
+				if (value.equals(items.get(i))){
+					String editedItem = "Edited Item name '" + value + "' already exists in list.\nItem not edited."; 
+					Toast.makeText(this, editedItem, Toast.LENGTH_LONG).show();
+					flag = false;
+				}
+			}
+			if (flag){
+				items.set(pos, value);
+				itemsAdapter.notifyDataSetInvalidated();
+				saveItems();
+				Toast.makeText(this, "Item edited successfully.", Toast.LENGTH_LONG).show();
+			}
 		}
 	}
 
@@ -115,7 +139,7 @@ public class ToDoActivity extends Activity{
 		// opening a file and reading a newline delimited list of itmes
 		File filesDir = this.getFilesDir();
 
-		File toDoFile = new File(filesDir, "ToDo.txt");
+		File toDoFile = new File(filesDir, filename);
 		if (toDoFile.exists()){
 			Log.d(TAG, "fileExists");
 		}
@@ -135,7 +159,7 @@ public class ToDoActivity extends Activity{
 
 	private void saveItems(){
 		File filesDir = this.getFilesDir();
-		File toDoFile = new File(filesDir, "ToDo.txt");
+		File toDoFile = new File(filesDir, filename);
 		try{
 			@SuppressWarnings("resource")
 			PrintWriter pw = new PrintWriter(toDoFile);

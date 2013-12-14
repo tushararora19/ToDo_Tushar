@@ -31,7 +31,8 @@
         android:layout_marginTop="54dp"
         android:ems="10"
         android:hint="@string/newItemText"
-        android:singleLine="false" />
+        android:singleLine="false" 
+        android:maxLines="3"/>
 
     <Button
         android:id="@+id/AddID"

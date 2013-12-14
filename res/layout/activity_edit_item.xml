@@ -27,7 +27,8 @@
         android:layout_below="@+id/EditItemBelowId"
         android:layout_marginTop="51dp"
         android:ems="10" 
-        android:singleLine="false">
+        android:singleLine="false"
+        android:maxLines="3">
 
         <requestFocus />
     </EditText>

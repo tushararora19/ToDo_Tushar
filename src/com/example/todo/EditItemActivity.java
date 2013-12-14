@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,13 +17,16 @@ public class EditItemActivity extends Activity {
 	EditText editItem;
 	Button save;
 	int position = -1;
+	private static final String TAG = "EditItemActivity";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.d(TAG, "onCreate"); 
 		setContentView(R.layout.activity_edit_item);
 		// Show the Up button in the action bar.
 		setupActionBar();
+		setTitle("Edit Item");
 		editItem = (EditText) findViewById(R.id.EditItemId);
 		save = (Button) findViewById(R.id.SaveButtonId);
 
@@ -36,6 +40,7 @@ public class EditItemActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
+		Log.d(TAG, "onCreateOptionsMenu"); 
 		getMenuInflater().inflate(R.menu.edit_item, menu);
 		return true;
 	}
@@ -59,6 +64,7 @@ public class EditItemActivity extends Activity {
 
 	// this method has to be public (since it is called from edit item activity xml on click)
 	public void SaveItem(View v){
+		Log.d(TAG, "onSaveClicked"); 
 		if (!editItem.getText().toString().equals("")){
 			Intent todoIntent = new Intent(this, ToDoActivity.class);
 			todoIntent.putExtra("text", editItem.getText().toString());
